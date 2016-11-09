@@ -1,0 +1,259 @@
+package ca.ubc.cs.cpsc210.translink.parsers;
+
+import ca.ubc.cs.cpsc210.translink.model.Route;
+import ca.ubc.cs.cpsc210.translink.model.RouteManager;
+import ca.ubc.cs.cpsc210.translink.model.RoutePattern;
+import ca.ubc.cs.cpsc210.translink.providers.DataProvider;
+import ca.ubc.cs.cpsc210.translink.providers.FileDataProvider;
+import ca.ubc.cs.cpsc210.translink.util.LatLon;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Parser for routes stored in a compact format in a txt file
+ */
+public class RouteMapParser {
+    private String fileName;
+
+    public RouteMapParser(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * Parse the route map txt file
+     */
+    public void parse() {
+        DataProvider dataProvider = new FileDataProvider(fileName);
+        try {
+            String c = dataProvider.dataSourceToString();
+            if (!c.equals("")) {
+                int posn = 0;
+                while (posn < c.length()) {
+                    int endposn = c.indexOf('\n', posn);
+                    String line = c.substring(posn, endposn);
+                    parseOnePattern(line);
+                    return;
+//                    posn = endposn + 1;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Parse one route pattern, adding it to the route that is named within it
+     *
+     * @param str
+     */
+    private void parseOnePattern(String str) {
+
+
+
+//        System.out.println(str);
+//        String[] info = str.split(";");
+//        String routeNumberAndPatternStr = info[0];
+//        String[] routeNumberAndPatternArr = routeNumberAndPatternStr.split("-");
+//        String routeNumber = routeNumberAndPatternArr[0].substring(1);
+//        String pattern = routeNumberAndPatternArr[1];
+//        String[] latLonArr = Arrays.copyOfRange(info, 1, info.length);
+//        System.out.println("length: " + latLonArr.length);
+//        List<LatLon> latLonList = new ArrayList<>();
+//        for (int i = 0; i < latLonArr.length - 1; i += 2) {
+//            latLonList.add(new LatLon(Double.parseDouble(latLonArr[i]), Double.parseDouble(latLonArr[i+1])));
+//        }
+//        if (latLonList != null) {
+//            System.out.println("ran in if statment");
+//            storeRouteMap(routeNumber, pattern, latLonList);
+//        }
+
+
+
+        // TODO: Task 3: Implement this method
+        String routeNumber = "";
+        String patternName = "";
+        List<LatLon> elements = new ArrayList<>();
+        routeNumber = str.substring(str.indexOf("N") + 1, str.indexOf("-"));
+        patternName = str.substring(str.indexOf("-") + 1, str.indexOf(";"));
+
+
+        String allLocn = str.substring(str.indexOf(";") + 1, str.length() - 1);
+//        List<LatLon> latLonList = new ArrayList<>();
+        final String[] eachLatOrLon = allLocn.substring(0, allLocn.length() - 1).split(";");
+        final double x = Double.parseDouble(eachLatOrLon[0]);
+        final double y = Double.parseDouble(eachLatOrLon[1]);
+        elements.add(new LatLon(x, y));
+        System.out.println(elements);
+
+        for (int i = 0; i < eachLatOrLon.length - 1; i += 2) {
+            elements.add(new LatLon(Double.parseDouble(eachLatOrLon[i]), Double.parseDouble(eachLatOrLon[i+1])));
+        }
+        if (elements != null) {
+            System.out.println("ran in if statment");
+            storeRouteMap(routeNumber, patternName, elements);
+        }
+
+
+
+
+//        System.out.println(allLocn);
+
+//        String delims = "[;]";
+//                String[] splitLatlon = allLocn.split(delims); // "-" and ";" is used as the delimiter
+//        System.out.println(splitLatlon);
+
+
+            int splitpoint = allLocn.indexOf(";");
+//        double x = Double.parseDouble(allLocn.substring(0, splitpoint));
+//        double y = Double.parseDouble(allLocn.substring(splitpoint+1)); // after the semi-colon until the end
+//        LatLon locn1 = new LatLon(x,y);
+//        elements.add(locn1);
+//        System.out.println(elements);
+
+
+        /*
+            final String[] eachLatOrLon = allLocn.substring(0, allLocn.length() - 1).split(";");
+            final double x = Double.parseDouble(eachLatOrLon[0]);
+            final double y = Double.parseDouble(eachLatOrLon[1]);
+            elements.add(new LatLon(x, y));
+            System.out.println(elements);
+
+        storeRouteMap(routeNumber, patternName, elements);
+*/
+
+
+
+
+//        DataProvider dataProvider = new FileDataProvider(fileName);
+//        try {
+//            String c = dataProvider.dataSourceToString();
+//            FileReader input = new FileReader("allroutemaps.txt");
+//            BufferedReader bufferedReader = new BufferedReader(input);
+////            String line = null;
+//            line = bufferedReader.readLine();
+
+
+//            while ((str != null)) {
+
+//                System.out.println("This is the line: " + c);
+//            }
+//                String delims = "[-;]";
+//                String[] array1 = str.split(delims); // "-" and ";" is used as the delimiter
+
+
+//                String[] array3 = array1[2].split(";");
+//                for (int i = 0; i < array3.length; i++){
+//                    storeRouteMap(array1[0], array1[1], array3[i]);
+//                }
+
+            /*
+                int getRouteNumber = line.indexOf("N", 0);
+                String coordinates = line.substring(getRouteNumber, line.length() -1);
+                int splitpoint = coordinates.indexOf(";");
+                double x = Double.parseDouble(coordinates.substring(0, splitpoint));
+                double y = Double.parseDouble(coordinates.substring(splitpoint+1)); // after the semi-colon until the end
+                LatLon locn1 = new LatLon(x,y);
+                listOfLatlon.add(locn1);
+                line = bufferedReader.readLine();
+*/
+
+        //make temporary variables for the three type of data
+//                String routeNumber = array1[0];
+
+
+//                String patternName = array1[1];
+
+
+        // create temporary instance of object and load 3 data values
+//                storeRouteMap(routeNumber, patternName, listOfLatlon);
+
+
+        // read next line before looping
+        // if end of file reached
+//                line = bufferedReader.readLine(); //##
+
+
+//                }
+
+
+//            bufferedReader.close(); // close the file
+//
+//        } catch (FileNotFoundException e) {
+//            System.out.println("Unable to open file " + fileName + "");
+//    }
+
+//    catch(IOException e
+//    )
+//
+//    {
+//        System.out.println(e.getMessage());
+
+
+    }
+
+
+
+    /**
+     * Store the parsed pattern into the named route
+     * Your parser should call this method to insert each route pattern into the corresponding route object
+     * There should be no need to change this method
+     *
+     * @param routeNumber the number of the route
+     * @param patternName the name of the pattern
+     * @param elements    the coordinate list of the pattern
+     */
+    private void storeRouteMap(String routeNumber, String patternName, List<LatLon> elements) {
+        Route r = RouteManager.getInstance().getRouteWithNumber(routeNumber);
+        System.out.println("before rp");
+        RoutePattern rp = r.getPattern(patternName);
+        System.out.println("after rp");
+        System.out.println("elements is : " + elements);
+        rp.setPath(elements);
+        System.out.println("after set path");
+    }
+}
+
+
+/*
+ private void parseOnePattern(String str) {
+        fileName = str; // passing in name of file, then handling file name over to the field "str"
+        parse();  // method that returns all lines of code from the text file
+
+        FileReader fr = new FileReader(fileName);// reads bytes (characters) from a text file
+        BufferedReader textReader = new BufferedReader(fr); // reads whole lines instead of characters
+
+        //set up an array
+        int numberOfLines = readLines();
+        String[] textData = new String[numberOfLines]; // sets up a string array
+
+        //put all lines of text from file into a position in the array
+
+        int i;
+        for (i=0; i< numberOfLines; i++){
+            storeRouteMap();
+
+
+        }
+
+        textReader.close();
+        return textData;
+
+    }
+
+    int readLines() throws  IOException{
+
+        FileReader fr = new FileReader(fileName);
+        BufferedReader bf = new BufferedReader(fr);
+
+        String aLine;
+        int numberOfLines = 0;
+
+        while ((aLine = bf.readLine()) != null){ // loop round the lines of text until no more lines (which returns null)
+            numberOfLines ++;
+        }
+        bf.close();
+        return  numberOfLines;
+
+    }
