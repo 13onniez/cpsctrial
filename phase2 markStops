@@ -1,0 +1,63 @@
+Testing1
+Marker marker = new Marker(mapView);
+        double lat = 49.267581;
+        double lon = -123.252321;
+        GeoPoint geopoint = new GeoPoint(lat, lon);
+        marker.setPosition(geopoint);
+        marker.setIcon(stopIconDrawable);
+        marker.setTitle("OMFG IM DYING ITS SO HARD");
+        marker.setInfoWindow(stopInfoWindow);
+        stopClusterer.add(marker);
+        
+        
+        // with an iterator
+        Iterator<Stop> stopIterator = stopManager.iterator();
+        while (stopIterator.hasNext()){
+
+            Stop stop = stopIterator.next();
+            LatLon latLon = stop.getLocn();
+            double lat = latLon.getLatitude();
+            double lon = latLon.getLongitude();
+            GeoPoint geoPoint = new GeoPoint(lat, lon);
+//            if (Geometry.rectangleContainsPoint(northWest, southEast, latLon)){
+                Marker marker = new Marker(mapView);
+                marker.setRelatedObject(stop);
+                marker.setIcon(stopIconDrawable);
+                marker.setTitle(stop.getName()); // add info window by setting title + snippet
+                marker.setSnippet(Integer.toString(stop.getNumber()));
+                marker.setPosition(geoPoint);
+                marker.setInfoWindow(stopInfoWindow);
+                stopClusterer.add(marker);
+            */
+            
+            
+            
+            // WORKS
+             * TODO: complete the implementation of this method (Task 5)
+     */
+    private void markStops() {
+        Drawable stopIconDrawable = getResources().getDrawable(R.drawable.stop_icon);
+
+        updateVisibleArea();
+        newStopClusterer();
+        updateOverlays();
+
+        //if the stops are within the fields (Geometry.rectangleContainsPoint(norwest, se, stop)
+        // then for every stop --> do stuff (add markers)
+        for (Stop stop:stopManager.getInstance()){
+            if (Geometry.rectangleContainsPoint(northWest, southEast, stop.getLocn())){
+                Marker marker = new Marker(mapView);
+                marker.setRelatedObject(stop);
+                GeoPoint geopoint = new GeoPoint(stop.getLocn().getLatitude(), stop.getLocn().getLongitude());
+                marker.setIcon(stopIconDrawable);
+                marker.setTitle(stop.getName()+ Integer.toString(stop.getNumber()));
+                marker.setPosition(geopoint);
+                marker.setInfoWindow(stopInfoWindow);
+                stopClusterer.add(marker);
+            }
+        }
+
+
+
+
+    }
