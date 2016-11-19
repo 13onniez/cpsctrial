@@ -1,0 +1,99 @@
+  public static boolean rectangleContainsPoint(LatLon northWest, LatLon southEast, LatLon point) {
+        // TODO: Task 5: Implement this method
+
+        double Ax = northWest.getLatitude(); // x coordinate of upper left
+        double Ay = northWest.getLongitude(); // y coordinate of upper left
+        double width = (southEast.getLatitude() - northWest.getLatitude());
+        double height = (northWest.getLongitude() - southEast.getLongitude());
+        double Bx = northWest.getLatitude() + width;
+        double By = southEast.getLongitude() + height;
+        double Cx = southEast.getLatitude() - width;
+        double Cy = northWest.getLongitude() - height;
+        double Dx = southEast.getLatitude();
+        double Dy = southEast.getLongitude();
+        double pointX = point.getLatitude();
+        double pointY = point.getLongitude();
+
+        //side lengths of triangles
+        double sideAP = Math.sqrt(Math.pow((pointX - Ax), 2) + Math.pow((pointY - Ay), 2));
+        double sideAD = Math.sqrt(Math.pow((Dx - Ax), 2) + Math.pow((pointY - Ay), 2));
+        double sideDP = Math.sqrt(Math.pow((pointX - Dx), 2) + Math.pow((Dy - pointY), 2));
+
+
+        //triangle APD
+
+        
+        
+        
+// area of triangle APD
+//        double absAPD = Math.abs(((Ax-pointX)*(Dy-Ay)) - ((Ax - Dx)*(pointY - Ay)));
+//        double areaAPD = absAPD * 0.5;
+       
+
+        /* =======second way===========
+        double s = (sideAD + sideAP + sideDP) / 2;
+         double areaAPD = Math.sqrt(s * (s - sideAD) * (s - sideAP) * (s-sideDP)) * 0.5;
+        System.out.println("sideDP" + (sideDP) + " sum of side lengths" + s);
+
+        System.out.println("area" + areaAPD);
+        ///
+
+        double sideCP = Math.sqrt(Math.pow((Cx - pointX), 2) + Math.pow((Cy - pointY), 2));
+        double sideCD = Math.sqrt(Math.pow((Cx - Dx), 2) + Math.pow((Dy - Cy), 2));
+
+        double s1 = (sideCP + sideCD + sideDP) / 2;
+        double areaDPC = Math.sqrt(s1 * (s1 - sideCP) * (s1 - sideCD) * (s1-sideDP)) * 0.5;
+
+        System.out.println("area" + areaDPC);
+
+        ////
+
+        double sideBP = Math.sqrt(Math.pow((pointX - Bx), 2) + Math.pow((pointY - By), 2));
+        double sideCB = Math.sqrt(Math.pow((Cx - Bx), 2) + Math.pow((Cy - By), 2));
+
+        double s2 = (sideBP + sideCB + sideCP) / 2;
+        double areaCPB = Math.sqrt(s2 * (s2 - sideBP) * (s2 - sideCB) * (s2-sideCP)) * 0.5;
+
+        System.out.println("area" + areaCPB);
+
+        ///
+        double sideBA = Math.sqrt(Math.pow((Bx - Ax), 2) + Math.pow((By - Ay), 2));
+
+        double s3 = (sideBP + sideAP + sideBA) / 2;
+        double areaPBA = Math.sqrt(s * (s3 - sideBP) * (s3 - sideAP) * (s3-sideBA)) * 0.5;
+
+        System.out.println("area" + areaPBA);
+
+        ///
+        
+        ============ second way========
+
+//       1.  If this sum is greater than the area of the rectangle, then P(x,y)P(x,y) is outside the rectangle.
+
+        double areaRec = width * height;
+        double sumOfTri = areaAPD + areaDPC + areaCPB + areaPBA;
+        if (sumOfTri > areaRec){
+            return false;
+        }
+
+        if (sumOfTri == areaRec){
+            if (areaAPD == 0) {
+                return true;
+            }
+            if (areaDPC == 0) {
+                return true;
+            }if (areaCPB == 0){
+                return true;
+            }
+            if (areaPBA == 0){
+                return true;
+            }
+
+
+        }
+        return false;
+*/
+
+
+        return false;
+    }
