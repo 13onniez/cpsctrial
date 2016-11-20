@@ -1,0 +1,25 @@
+**First way
+ private void handleLocationChange(Location location) {
+        Stop nearest = null;
+        Integer closestDistance = (StopManager.RADIUS);
+        double lat = location.getLatitude();
+        double lon = location.getLongitude();
+        LatLon userLatlon = new LatLon(lat, lon);
+
+        for (Stop stop : StopManager.getInstance()){
+            double distance = SphericalGeometry.distanceBetween(stop.getLocn(), userLatlon);
+            if (distance < closestDistance){
+                closestDistance = ((int) distance);
+                nearest = stop;
+            }
+        }
+        updateMarkerOfNearest(nearest);
+        locationListener.onLocationChanged(nearest, userLatlon);
+
+
+    }
+    
+    
+** Second way
+    
+    
