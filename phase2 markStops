@@ -61,3 +61,82 @@ Marker marker = new Marker(mapView);
 
 
     }
+
+
+// works #2 (current)
+
+/**
+     * Mark all visible stops in stop manager onto map.
+     * <p/>
+     * TODO: complete the implementation of this method (Task 5)
+     */
+    private void markStops() {
+        Drawable stopIconDrawable = getResources().getDrawable(R.drawable.stop_icon);
+
+        updateVisibleArea();
+        newStopClusterer();
+        updateOverlays();
+
+
+        //if the stops are within the fields (Geometry.rectangleContainsPoint(norwest, se, stop)
+        // then for every stop --> do stuff (add markers)
+
+
+        for (Stop stop : stopManager.getInstance()) {
+            if (Geometry.rectangleContainsPoint(northWest, southEast, stop.getLocn())) {
+                Marker marker = new Marker(mapView);
+                marker.setRelatedObject(stop); // "set stop as marker's related object???"
+                GeoPoint geopoint = new GeoPoint(stop.getLocn().getLatitude(), stop.getLocn().getLongitude());
+                marker.setIcon(stopIconDrawable);
+                marker.setTitle(stop.getName() + Integer.toString(stop.getNumber()));
+                marker.setPosition(geopoint);
+                marker.setInfoWindow(stopInfoWindow);
+
+                stopClusterer.add(marker);
+
+                
+                 if (!stopMarkerMap.containsKey(stop)) {
+                    setMarker(stop, marker); //this.stopMarkerMap.put(stop, marker); // keep track of Marker with the hashmap
+                }
+                // else if the marker is off the screen
+                if (stopMarkerMap.containsKey(stop)) { // if stop was previously on the screen
+
+                    getMarker(stop).remove(mapView); // stopMarkerMap.get(stop); --> remove stop from the mapview
+                    clearMarker(stop); //stopMarkerMap.remove(stop) --> remove the reference to the marker from the hashmap
+
+
+
+                }
+            }
+        }
+    }
+
+
+
+
+
+/*
+  // if the stop is null (if stop isnt already displayed on map)
+                if (getMarker(stop) == null) {
+                    setMarker(stop, marker); // stopMarkerMap.put(stop, marker); --> add the marker to the Map and keep track of it with the Hashmap
+                }
+
+                // if marker is off screen
+                if (getMarker(stop))
+                clearMarker(stop);
+                getMarker(stop).remove(mapView);
+               */
+               
+               
+               
+               
+               
+               /* doesnt work
+               if (!stopMarkerMap.containsKey(stop)) {
+                    this.stopMarkerMap.put(stop, marker); // keep trap of Marker with the hashmap
+                }
+            } else {
+                if (stopMarkerMap.containsKey(stop)) {
+                    getMarker(stop).remove(mapView); // return stopMarkerMap.get(stop);
+                    clearMarker(stop); // stopMarkerMap.remove(stop);
+                }
