@@ -32,7 +32,7 @@ Marker marker = new Marker(mapView);
             
             
             
-            // WORKS
+            // WORKS **nearest stop turns green for a second then turns back to red
              * TODO: complete the implementation of this method (Task 5)
      */
     private void markStops() {
@@ -111,7 +111,85 @@ Marker marker = new Marker(mapView);
         }
     }
 
+// FIX <3 **current version
+ private void markStops() {
+        Drawable stopIconDrawable = getResources().getDrawable(R.drawable.stop_icon);
 
+        updateVisibleArea();
+        newStopClusterer();
+        updateOverlays();
+
+
+        //if the stops are within the fields (Geometry.rectangleContainsPoint(norwest, se, stop)
+        // then for every stop --> do stuff (add markers)
+        for (Stop stop : stopManager.getInstance()) {
+            if (Geometry.rectangleContainsPoint(northWest, southEast, stop.getLocn())) {
+                Marker marker = new Marker(mapView);
+                marker.setRelatedObject(stop); // "set stop as marker's related object???"
+                GeoPoint geopoint = new GeoPoint(stop.getLocn().getLatitude(), stop.getLocn().getLongitude());
+
+
+                marker.setIcon(stopIconDrawable);
+                marker.setTitle(stop.getName() + Integer.toString(stop.getNumber()));
+                marker.setPosition(geopoint);
+                marker.setInfoWindow(stopInfoWindow);
+                stopClusterer.add(marker);
+
+
+// update marker of nearest stop and if the nearest marker is equal  to the current marker then set the marker as the nearest, otherwise 
+                if (!stopMarkerMap.containsKey(stop)) {
+                    System.out.println("what is nearestStopMarker: "+ nearestStopMarker ); // this is null because it hasnt called the updateMarker method yet
+                    updateMarkerOfNearest(stop); // if the stop is nearest, up date to green ??CHANGE1
+                    System.out.println("what is nearestStopMarker after calling: "+ nearestStopMarker);  // has some marker
+                    if (nearestStopMarker == null){
+                        System.out.println("wtf is it null");
+                    }
+                    if (stopMarkerMap.get(stop) == (nearestStopMarker)){  
+//                    if (nearestStopMarker.equals(marker)) { // CHANGE 3 ;; BUG**: USE == instead of EQUALS :( FML ;;;stopMarkerMap.get(stop)    
+
+
+                        setMarker(stop, nearestStopMarker);
+                    }
+                    setMarker(stop, marker); //this.stopMarkerMap.put(stop, marker); // keep track of Marker with the hashmap
+
+                }
+                //====
+
+
+                // else if the marker is off the screen
+                if (stopMarkerMap.containsKey(stop)) { // if stop was previously on the screen
+
+                    getMarker(stop).remove(mapView); // stopMarkerMap.get(stop); --> remove stop from the mapview
+                    clearMarker(stop); //stopMarkerMap.remove(stop) --> remove the reference to the marker from the hashmap
+
+
+                }
+
+            }
+            
+        
+        }
+    }
+
+
+
+** remember to change updateMarkerofNearest method
+ private void updateMarkerOfNearest(Stop nearest) {
+
+        Drawable stopIconDrawable = getResources().getDrawable(R.drawable.stop_icon);
+        Drawable closestStopIconDrawable = getResources().getDrawable(R.drawable.closest_stop_icon);
+
+        if (nearest == null) {
+        } else for (Marker m : stopClusterer.getItems()) {
+            m.setIcon(stopIconDrawable);
+            if (m.getRelatedObject().equals(nearest)) {
+                m.setIcon(closestStopIconDrawable);
+                nearestStopMarker = m; // CHANGE 2 SET the current marker to nearestStop marker so that you can use this field
+
+
+            }
+        }
+========================================
 
 
 
@@ -140,3 +218,7 @@ Marker marker = new Marker(mapView);
                     getMarker(stop).remove(mapView); // return stopMarkerMap.get(stop);
                     clearMarker(stop); // stopMarkerMap.remove(stop);
                 }
+                
+                
+                
+                
