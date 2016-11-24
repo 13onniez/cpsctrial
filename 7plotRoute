@@ -1,0 +1,50 @@
+  === test1
+  private void plotRoutes() {
+        updateVisibleArea();
+        busRouteOverlays.clear();
+        Stop s = StopManager.getInstance().getSelected();
+        busRouteLegendOverlay.clear();
+
+
+//        float lineWidth = getLineWidth(zoomLevel);
+        Polyline polyline = new Polyline(mapView.getContext());
+        List<GeoPoint> geoPoints = new ArrayList<>();
+
+        // or routes instead of s.getRoutes???
+//        for (Stop stop : stops) {
+//            if (stops == null) {
+//                throw new NullPointerException();
+//            }
+        /*
+
+                // s.getRoutes? but i need it to be (RoutePattern pt : listOfRP)
+                // because route pattern have a thing that returns LAT LON
+                for (Route r : routes) {
+                    for (RoutePattern rPat : r.getPatterns()) {
+                        List<LatLon> pts = rPat.getPath();
+                        for (LatLon pt : pts) {
+                            int lat = (int) (pt.getLatitude() * 1000000.0D);
+                            int lon = (int) (pt.getLongitude() * 1000000.0D);
+                            GeoPoint geoPoint = new GeoPoint(lat, lon);
+                            geoPoints.add(geoPoint);
+
+
+                            if (Geometry.rectangleContainsPoint(northWest, southEast, pt)) {
+                                polyline.setColor(busRouteLegendOverlay.getColor(r.getNumber())); // return colour given bus route number
+                                polyline.setWidth(lineWidth);
+                                polyline.setVisible(true);
+                                polyline.setPoints(geoPoints);
+                                busRouteOverlays.add(polyline);
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+        polyline.setPoints(geoPoints);
+        busRouteOverlays.add(polyline);
+        updateOverlays();
+*/
+    }
