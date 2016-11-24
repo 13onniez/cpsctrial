@@ -111,7 +111,7 @@ Marker marker = new Marker(mapView);
         }
     }
 
-// FIX <3 **current version
+// **current version (3) ** NVM IT WORKS <3 the green was just hidden in the clusters hehe
  private void markStops() {
         Drawable stopIconDrawable = getResources().getDrawable(R.drawable.stop_icon);
 
