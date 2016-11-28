@@ -147,3 +147,271 @@ public class Geometry {
                 return true;
             }
  */
+
+
+
+
+
+
+  /**
+     * Return true if the rectangle intersects the line
+     *
+     * @param northWest the coordinate of the north west corner of the rectangle
+     * @param southEast the coordinate of the south east corner of the rectangle
+     * @param src       one end of the line in question
+     * @param dst       the other end of the line in question
+     * @return true if any point on the line is on the boundary or inside the rectangle
+     */
+    public static boolean rectangleIntersectsLine(LatLon northWest, LatLon southEast, LatLon src, LatLon dst) {
+        // TODO: Tasks 5: Implement this method
+
+        // if one of the line endpoints inside rectangle
+        if ((rectangleContainsPoint(northWest, southEast, src)) ||
+                (rectangleContainsPoint(northWest, southEast, dst))) {
+            return true;
+        }
+
+
+        double xsrc = src.getLatitude();
+        double ysrc = src.getLongitude();
+        double xdst = dst.getLatitude();
+        double ydst = dst.getLongitude();
+
+
+        int x = (int) northWest.getLatitude(); // x coordinate of upper left
+        int y = (int) northWest.getLongitude(); // y coordinate of upper left
+        int width = (int) (southEast.getLatitude() - northWest.getLatitude());
+        int height = (int) (northWest.getLongitude() - southEast.getLongitude());
+
+
+        int x2 = (int) southEast.getLatitude(); //bottom right
+        int y2 = (int) southEast.getLongitude();
+
+        Rectangle r1 = new Rectangle(x, y, width, height);
+        Line2D l1 = new Line2D.Double(xsrc, ysrc, xdst, ydst);
+        System.out.println("l1.intsects(r1) = " + l1.intersects(r1));
+
+
+        if ((x == xsrc) || (y == ysrc)) {
+            return true;
+        }
+        if ((y == ysrc) || (y == ydst)) {
+            return true;
+        }
+        if ((x2 == xsrc) || (y2 == ysrc)) {
+            return true;
+        }
+        if ((y2 == ysrc) || (y2 == ydst)) {
+            return true;
+
+        }
+        return l1.intersects(r1);
+    }
+
+    /**
+     * A utility method that you might find helpful in implementing the two previous methods
+     * Return true if x is >= lwb and <= upb
+     *
+     * @param lwb the lower boundary
+     * @param upb the upper boundary
+     * @param x   the value in question
+     * @return true if x is >= lwb and <= upb
+     */
+    private static boolean between(double lwb, double upb, double x) {
+        return lwb <= x && x <= upb;
+    }
+}
+
+=====
+package ca.ubc.cs.cpsc210.translink.util;
+
+import java.awt.geom.Rectangle2D;
+
+/**
+ * Compute relationships between points, lines, and rectangles represented by LatLon objects
+ */
+public class Geometry {
+    static Rectangle2D rec2D;
+
+    /**
+     * Return true if the point is inside of, or on the boundary of, the rectangle formed by northWest and southeast
+     *
+     * @param northWest the coordinate of the north west corner of the rectangle
+     * @param southEast the coordinate of the south east corner of the rectangle
+     * @param point     the point in question
+     * @return true if the point is on the boundary or inside the rectangle
+     */
+    public static boolean rectangleContainsPoint(LatLon northWest, LatLon southEast, LatLon point) {
+        // TODO: Task 5: Implement this method
+
+
+        double Ax = northWest.getLatitude(); // x coordinate of upper left
+        double Ay = northWest.getLongitude(); // y coordinate of upper left
+        double width = (southEast.getLatitude() - northWest.getLatitude());
+        double height = (northWest.getLongitude() - southEast.getLongitude());
+        double Bx = northWest.getLatitude() + width;
+        double By = southEast.getLongitude() + height;
+        double Cx = southEast.getLatitude() - width;
+        double Cy = northWest.getLongitude() - height;
+        double Dx = southEast.getLatitude();
+        double Dy = southEast.getLongitude();
+        double pointX = point.getLatitude();
+        double pointY = point.getLongitude();
+
+
+        //side lengths of triangles
+        double sideAP = Math.sqrt(Math.pow((pointX - Ax), 2) + Math.pow((pointY - Ay), 2));
+        double sideAD = Math.sqrt(Math.pow((Dx - Ax), 2) + Math.pow((Dy - Ay), 2));
+        double sideDP = Math.sqrt(Math.pow((pointX - Dx), 2) + Math.pow((Dy - pointY), 2));
+        double sideDC = Math.sqrt(Math.pow((Cx - Dx), 2) + Math.pow((Dy - Cy), 2));
+        double sideCP = Math.sqrt(Math.pow((pointX - Cx), 2) + Math.pow((Cy - pointY), 2));
+        double sideCB = Math.sqrt(Math.pow((Cx - Bx), 2) + Math.pow((Cy - By), 2));
+        double sideBP = Math.sqrt(Math.pow((pointX - Bx), 2) + Math.pow((By - pointY), 2));
+        double sideBA = Math.sqrt(Math.pow((Bx - Ax), 2) + Math.pow((By - Ay), 2));
+
+
+        double areaAPD = calculateArea(sideAP, sideAD, sideDP); //triangle APD
+        double areaDPC = calculateArea(sideDC, sideCP, sideDP); //triangle DPC
+        double areaCPB = calculateArea(sideCB, sideBP, sideCP); //triangle CPB
+        double areaBPA = calculateArea(sideBA, sideBP, sideAP); //triangle BPA
+
+        double areaRec = width * height;
+        double sumOfTri = areaAPD + areaDPC + areaCPB + areaBPA;
+//       double roundedTriSum =  Math.floor(sumOfTri);
+        double roundedTriSum = Math.round(sumOfTri);
+
+        if (roundedTriSum > areaRec) {
+            return false;
+        }
+
+        if (roundedTriSum == areaRec) {
+            if (areaAPD == 0) {
+                return true;
+            }
+            if (areaDPC == 0) {
+                return true;
+            }
+            if (areaCPB == 0) {
+                return true;
+            }
+            if (areaBPA == 0) {
+                return true;
+            }
+
+
+        }
+
+        return true;
+    }
+
+
+    // calculate area of a triangle
+    public static double calculateArea(double a, double b, double c) {
+        double s = (a + b + c) / 2;
+        return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    }
+
+    /**
+     * Return true if the rectangle intersects the line
+     *
+     * @param northWest the coordinate of the north west corner of the rectangle
+     * @param southEast the coordinate of the south east corner of the rectangle
+     * @param src       one end of the line in question
+     * @param dst       the other end of the line in question
+     * @return true if any point on the line is on the boundary or inside the rectangle
+     */
+    public static boolean rectangleIntersectsLine(LatLon northWest, LatLon southEast, LatLon src, LatLon dst) {
+        // TODO: Tasks 5: Implement this method
+
+        // if one of the line endpoints inside rectangle
+        if ((rectangleContainsPoint(northWest, southEast, src)) ||
+                (rectangleContainsPoint(northWest, southEast, dst))) {
+            return true;
+        }
+
+
+        double xsrc = src.getLatitude();
+        double ysrc = src.getLongitude();
+        double xdst = dst.getLatitude();
+        double ydst = dst.getLongitude();
+
+
+        double x = northWest.getLatitude(); // x coordinate of upper left
+        double y = northWest.getLongitude(); // y coordinate of upper left
+        double width = (southEast.getLatitude() - northWest.getLatitude());
+        double height = (northWest.getLongitude() - southEast.getLongitude());
+        double x2 = southEast.getLatitude(); //bottom right
+        double y2 = southEast.getLongitude();
+
+
+// if both points outside rec (dont need??)
+        if (((x > xsrc) &&
+                (x > xdst)) ||
+                ((xsrc > x2) &&
+                        (xdst > x2)) ||
+                ((y2 > ysrc) &&
+                        (y2 > ydst)) ||
+                ((ysrc > y) &&
+                        (ydst > y))) {
+            return false;
+        }
+
+        //slope of line
+        double m = (ydst - ysrc) / (xdst - xsrc);
+
+        //line intersects if
+        if (((-height / 2) <= (m * width / 2)) && ((m * width / 2) <= (height / 2))) {
+            return true;
+
+        }
+
+        if (((-width / 2) <= ((height / 2) / m)) &&
+                (((height / 2) / m) <= (width / 2))) {
+            return true;
+        }
+
+        if ((x <= xsrc) &&
+                (x <= xdst) &&
+                (xsrc <= x2) &&
+                (xdst <= x2) &&
+                (y2 <= ysrc) &&
+                (y2 <= ydst) &&
+                (ysrc <= y) &&
+                (ydst <= y)) {
+            return true;
+        }
+
+
+        return false;
+    }
+
+
+    /**
+     * A utility method that you might find helpful in implementing the two previous methods
+     * Return true if x is >= lwb and <= upb
+     *
+     * @param lwb the lower boundary
+     * @param upb the upper boundary
+     * @param x   the value in question
+     * @return true if x is >= lwb and <= upb
+     */
+    private static boolean between(double lwb, double upb, double x) {
+        return lwb <= x && x <= upb;
+    }
+}
+
+
+/*
+ }
+
+
+        int xPoint = (int) point.getLatitude();
+        int yPoint = (int) point.getLongitude();
+        Point p = new Point(xPoint, yPoint);
+        if (!r.contains(p)) {
+
+            if (((between(northWest.getLatitude(), southEast.getLatitude(), point.getLatitude()))) ||
+                    (between(northWest.getLongitude(), southEast.getLongitude(), point.getLongitude()))) {
+                return true;
+            }
+ */
